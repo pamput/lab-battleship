@@ -32,6 +32,23 @@ public enum Direction {
         );
     }
 
+    public static Direction valueOf(char c) {
+        c = Character.toUpperCase(c);
+
+        switch (c) {
+            case 'N':
+                return North;
+            case 'E':
+                return Est;
+            case 'S':
+                return South;
+            case 'W':
+                return West;
+            default:
+                return null;
+        }
+    }
+
     public Direction goRight() {
         return Direction.goRight(this);
     }

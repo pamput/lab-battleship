@@ -18,6 +18,8 @@ public class Board {
 
     public Board(int size) {
 
+        Validate.isTrue(size > 0);
+
         this.size = size;
 
         this.board = new ArrayList<>(size);
@@ -72,12 +74,12 @@ public class Board {
         return position;
     }
 
-    public Position rotate(Ship ship, RotateDirection rotateDirection) {
+    public Position rotate(Ship ship, Rotation rotation) {
 
         Validate.notNull(ship);
-        Validate.notNull(rotateDirection);
+        Validate.notNull(rotation);
 
-        switch (rotateDirection) {
+        switch (rotation) {
             case Left:
                 return rotateLeft(ship);
             case Right:
