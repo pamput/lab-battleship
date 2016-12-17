@@ -5,17 +5,48 @@ import net.thoughtmachine.parser.GameInputParser;
 import net.thoughtmachine.parser.ParsedResult;
 import net.thoughtmachine.printer.BoardPrinter;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 public class Application {
 
     private static final String DEFAULT_INPUT = "/input.txt";
 
-    public void loadInput(String input) {
-        try {
 
-            InputStream in = getClass().getResourceAsStream(input);
+    public void loadInput(String input, String output) throws IOException {
+        InputStream in = getClass().getResourceAsStream(input);
+        File outFile = new File(output);
+        outFile.createNewFile();
+        OutputStream out = new FileOutputStream(outFile);
+        loadInput(in, out);
+    }
+
+    public void loadInput(String input) {
+        InputStream in = getClass().getResourceAsStream(input);
+        loadInput(in, System.out);
+    }
+
+    public void loadInput() {
+        loadInput(DEFAULT_INPUT);
+    }
+
+    public static void main(String... args) throws IOException {
+        Application app = new Application();
+
+        if (args != null && args.length > 0) {
+
+            if (args.length == 1) {
+                app.loadInput(args[0]);
+            } else {
+                app.loadInput(args[0], args[2]);
+            }
+
+        } else {
+            app.loadInput();
+        }
+    }
+
+    public void loadInput(InputStream in, OutputStream out) {
+        try {
 
             GameInputParser parser = new GameInputParser();
 
@@ -25,25 +56,11 @@ public class Application {
             game.execute(result.getActions());
 
             BoardPrinter printer = new BoardPrinter();
-            printer.print(game.getBoard(), System.out);
+            printer.print(game.getBoard(), out);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-    }
-
-    public void loadInput() {
-        loadInput(DEFAULT_INPUT);
-    }
-
-    public static void main(String... args) {
-        Application app = new Application();
-
-        if (args != null && args.length > 0) {
-            app.loadInput(args[0]);
-        } else {
-            app.loadInput();
-        }
     }
 }
