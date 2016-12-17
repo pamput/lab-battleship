@@ -36,16 +36,15 @@ public class GameInputParser {
                 new InputStreamReader(inputStream, Charset.forName("UTF-8"))
         );
 
-        String strSize = reader.readLine();
-        Validate.notBlank(strSize, "Could not find the board size at line 1");
+        String strSize = readLineSkipBlank(reader);
+        Validate.isTrue(StringUtils.isNumeric(strSize), "Could not find the board size");
 
-        String strShips = reader.readLine();
-        Validate.notBlank(strShips, "Could not find any ship placement at line 2");
+        String strShips = readLineSkipBlank(reader);
 
         List<String> strActionList = new ArrayList<>();
 
         String line;
-        while ((line = reader.readLine()) != null) {
+        while ((line = readLineSkipBlank(reader)) != null) {
             strActionList.add(line);
         }
 
@@ -144,6 +143,19 @@ public class GameInputParser {
 
         return actionList;
 
+    }
+
+    private String readLineSkipBlank(BufferedReader reader) throws IOException {
+        Validate.notNull(reader);
+
+        String line;
+        while ((line = reader.readLine()) != null) {
+            if (StringUtils.isNotBlank(line)) {
+                return line;
+            }
+        }
+
+        return null;
     }
 
     private String cleanSpaces(String string) {
