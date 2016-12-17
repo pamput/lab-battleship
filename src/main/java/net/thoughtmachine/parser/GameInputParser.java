@@ -2,10 +2,11 @@ package net.thoughtmachine.parser;
 
 import com.google.common.base.CharMatcher;
 import net.thoughtmachine.game.IAction;
-import net.thoughtmachine.model.Board;
-import net.thoughtmachine.model.Direction;
-import net.thoughtmachine.model.Position;
-import net.thoughtmachine.model.Ship;
+import net.thoughtmachine.game.impl.MoveAction;
+import net.thoughtmachine.game.impl.RotateAction;
+import net.thoughtmachine.game.impl.ShotAction;
+import net.thoughtmachine.model.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
 import java.io.BufferedReader;
@@ -25,6 +26,7 @@ public class GameInputParser {
 
     private final Pattern SHIP_PLACEMENT_LINE = Pattern.compile("(\\([0-9,ENSW]+\\))+");
     private final Pattern SHIP_GROUP = Pattern.compile("\\(([0-9]+),([0-9]+),([ENSW])\\)");
+    private final Pattern ACTION_LINE = Pattern.compile("\\(([0-9]+),([0-9]+)\\)([LRM]*)");
 
     public ParsedResult parseInput(InputStream inputStream) throws IOException {
 
@@ -96,7 +98,51 @@ public class GameInputParser {
     }
 
     private List<IAction> createActionList(List<String> strActionList) {
-        return null;
+
+        List<IAction> actionList = new ArrayList<>();
+
+        for (String strAction : strActionList) {
+
+            Matcher matcher = ACTION_LINE.matcher(strAction.toUpperCase());
+
+            if (matcher.matches()) {
+
+                int x = Integer.parseInt(matcher.group(0));
+                int y = Integer.parseInt(matcher.group(1));
+                String actions = matcher.group(3);
+
+                if (StringUtils.isBlank(actions)) {
+
+                    actionList.add(
+                            new ShotAction(x, y)
+                    );
+
+                } else {
+
+                    for (char c : actions.toCharArray()) {
+                        switch (c) {
+                            case 'L':
+                                actionList.add(new RotateAction(x, y, Rotation.Left));
+                                break;
+                            case 'R':
+                                actionList.add(new RotateAction(x, y, Rotation.Right));
+                                break;
+                            case 'M':
+                                actionList.add(new MoveAction(x, y));
+                                break;
+                            default:
+                                throw new IllegalStateException();
+                        }
+                    }
+
+                }
+
+            }
+
+        }
+
+        return actionList;
+
     }
 
 
