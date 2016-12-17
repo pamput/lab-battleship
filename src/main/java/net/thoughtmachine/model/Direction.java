@@ -57,4 +57,8 @@ public enum Direction {
         return Direction.goLeft(this);
     }
 
+    public char getChar() {
+        return this.toString().charAt(0);
+    }
+
 }

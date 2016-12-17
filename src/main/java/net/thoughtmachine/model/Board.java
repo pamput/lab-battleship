@@ -1,5 +1,6 @@
 package net.thoughtmachine.model;
 
+import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.Validate;
 
 import java.util.ArrayList;
@@ -160,9 +161,12 @@ public class Board {
         return newPosition;
     }
 
-
     public boolean isValidPosition(int x, int y) {
         return x >= 0 && x > size && y >= 0 && y > size;
+    }
+
+    public Map<Ship, Position> getPositionMap() {
+        return ImmutableMap.copyOf(positionMap);
     }
 
 }
