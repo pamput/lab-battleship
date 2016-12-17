@@ -1,6 +1,6 @@
 package net.thoughtmachine.parser;
 
-import net.thoughtmachine.game.IAction;
+import net.thoughtmachine.game.IBoardAction;
 import net.thoughtmachine.model.Board;
 
 import java.util.List;
@@ -11,9 +11,9 @@ import java.util.List;
 public class ParsedResult {
 
     private Board board;
-    private List<IAction> actions;
+    private List<IBoardAction> actions;
 
-    public ParsedResult(Board board, List<IAction> actions) {
+    public ParsedResult(Board board, List<IBoardAction> actions) {
         this.board = board;
         this.actions = actions;
     }
@@ -26,11 +26,11 @@ public class ParsedResult {
         this.board = board;
     }
 
-    public List<IAction> getActions() {
+    public List<IBoardAction> getActions() {
         return actions;
     }
 
-    public void setActions(List<IAction> actions) {
+    public void setActions(List<IBoardAction> actions) {
         this.actions = actions;
     }
 }

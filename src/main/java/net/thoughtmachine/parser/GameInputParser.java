@@ -1,10 +1,12 @@
 package net.thoughtmachine.parser;
 
 import com.google.common.base.CharMatcher;
-import net.thoughtmachine.game.IAction;
-import net.thoughtmachine.game.impl.MoveAction;
-import net.thoughtmachine.game.impl.RotateAction;
-import net.thoughtmachine.game.impl.ShotAction;
+import net.thoughtmachine.game.IBoardAction;
+import net.thoughtmachine.game.IShipAction;
+import net.thoughtmachine.game.action.ShipAction;
+import net.thoughtmachine.game.action.ShotAction;
+import net.thoughtmachine.game.action.ship_action.MoveShipAction;
+import net.thoughtmachine.game.action.ship_action.RotateShipAction;
 import net.thoughtmachine.model.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -70,16 +72,12 @@ public class GameInputParser {
 
         Validate.isTrue(shipLineMatcher.matches(), "Cannot parse ship placement line");
 
-        for (int i = 0; i < shipLineMatcher.groupCount(); i++) {
+        Matcher shipGroupMatcher = SHIP_GROUP.matcher(strShips);
+        while (shipGroupMatcher.find()) {
 
-            String strShipGroup = shipLineMatcher.group(i);
-
-            Matcher shipGroupMatcher = SHIP_GROUP.matcher(strShipGroup);
-            Validate.isTrue(shipGroupMatcher.matches(), "Cannot parse ship placement group: %s", strShipGroup);
-
-            int x = Integer.parseInt(shipGroupMatcher.group(0));
-            int y = Integer.parseInt(shipGroupMatcher.group(1));
-            Direction d = Direction.valueOf(shipGroupMatcher.group(2).charAt(0));
+            int x = Integer.parseInt(shipGroupMatcher.group(1));
+            int y = Integer.parseInt(shipGroupMatcher.group(2));
+            Direction d = Direction.valueOf(shipGroupMatcher.group(3).charAt(0));
 
             board.addShip(
                     new Ship(),
@@ -93,22 +91,20 @@ public class GameInputParser {
         return board;
     }
 
-    private String cleanSpaces(String string) {
-        return CharMatcher.whitespace().removeFrom(string);
-    }
+    private List<IBoardAction> createActionList(List<String> strActionList) {
 
-    private List<IAction> createActionList(List<String> strActionList) {
-
-        List<IAction> actionList = new ArrayList<>();
+        List<IBoardAction> actionList = new ArrayList<>();
 
         for (String strAction : strActionList) {
 
-            Matcher matcher = ACTION_LINE.matcher(strAction.toUpperCase());
+            Matcher matcher = ACTION_LINE.matcher(
+                    cleanSpaces(strAction).toUpperCase()
+            );
 
             if (matcher.matches()) {
 
-                int x = Integer.parseInt(matcher.group(0));
-                int y = Integer.parseInt(matcher.group(1));
+                int x = Integer.parseInt(matcher.group(1));
+                int y = Integer.parseInt(matcher.group(2));
                 String actions = matcher.group(3);
 
                 if (StringUtils.isBlank(actions)) {
@@ -119,22 +115,27 @@ public class GameInputParser {
 
                 } else {
 
+                    List<IShipAction> shipActionList = new ArrayList<>();
+
                     for (char c : actions.toCharArray()) {
                         switch (c) {
                             case 'L':
-                                actionList.add(new RotateAction(x, y, Rotation.Left));
+                                shipActionList.add(new RotateShipAction(x, y, Rotation.Left));
                                 break;
                             case 'R':
-                                actionList.add(new RotateAction(x, y, Rotation.Right));
+                                shipActionList.add(new RotateShipAction(x, y, Rotation.Right));
                                 break;
                             case 'M':
-                                actionList.add(new MoveAction(x, y));
+                                shipActionList.add(new MoveShipAction(x, y));
                                 break;
                             default:
                                 throw new IllegalStateException();
                         }
                     }
 
+                    actionList.add(
+                            new ShipAction(x, y, shipActionList)
+                    );
                 }
 
             }
@@ -145,5 +146,8 @@ public class GameInputParser {
 
     }
 
+    private String cleanSpaces(String string) {
+        return CharMatcher.whitespace().removeFrom(string);
+    }
 
 }

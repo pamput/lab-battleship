@@ -1,33 +1,30 @@
-package net.thoughtmachine.game.impl;
+package net.thoughtmachine.game.action.ship_action;
 
-import net.thoughtmachine.game.IAction;
+import net.thoughtmachine.game.IShipAction;
 import net.thoughtmachine.model.Board;
 import net.thoughtmachine.model.Rotation;
 import net.thoughtmachine.model.Ship;
-import net.thoughtmachine.utils.ActionUtils;
 import org.apache.commons.lang3.Validate;
 
 /**
  * Created by Łukasz Kwasek on 17/12/2016.
  */
-public class RotateAction implements IAction {
+public class RotateShipAction implements IShipAction {
 
     private int x;
     private int y;
     private Rotation rotation;
 
-    public RotateAction(int x, int y, Rotation rotation) {
+    public RotateShipAction(int x, int y, Rotation rotation) {
         this.x = x;
         this.y = y;
         this.rotation = rotation;
     }
 
     @Override
-    public void execute(Board board) {
+    public void execute(Ship ship, Board board) {
 
         Validate.notNull(board);
-
-        Ship ship = ActionUtils.getUnsunkShip(board, x, y);
 
         Validate.isTrue(!ship.isSunk(), "Cannot rotate a sunk ship");
 

@@ -19,16 +19,16 @@ public class Game {
         this.board = board;
     }
 
-    public void execute(IAction action) {
+    public void execute(IBoardAction action) {
         Validate.notNull(action);
         action.execute(board);
     }
 
-    public void execute(Collection<IAction> actions) {
+    public void execute(Collection<IBoardAction> actions) {
 
         Validate.notNull(actions);
 
-        for(IAction action : actions) {
+        for(IBoardAction action : actions) {
             execute(action);
         }
     }

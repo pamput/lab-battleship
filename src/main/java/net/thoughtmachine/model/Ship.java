@@ -14,4 +14,13 @@ public class Ship {
     public void setSunk(boolean sunk) {
         this.sunk = sunk;
     }
+
+    @Override
+    public String toString() {
+        if (sunk) {
+            return "Ship [SUNK]";
+        } else {
+            return "Ship";
+        }
+    }
 }

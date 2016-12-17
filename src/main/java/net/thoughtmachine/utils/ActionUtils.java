@@ -13,7 +13,7 @@ public class ActionUtils {
 
         Validate.notNull(board);
         Validate.isTrue(board.isValidPosition(x, y), "Invalid coordinate (%s, %s)", x, y);
-        Validate.isTrue(board.isShip(x, y), "There is no ship at coordinate (%s, %s)");
+        Validate.isTrue(board.isShip(x, y), "There is no ship at coordinate (%s, %s)", x, y);
 
         return board.getShip(x, y);
 

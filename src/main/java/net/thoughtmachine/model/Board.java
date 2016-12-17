@@ -3,9 +3,7 @@ package net.thoughtmachine.model;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.Validate;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,7 +11,7 @@ import java.util.Map;
  */
 public class Board {
 
-    private List<List<Ship>> board;
+    private Ship[][] board;
     private Map<Ship, Position> positionMap;
     private int size;
 
@@ -23,17 +21,17 @@ public class Board {
 
         this.size = size;
 
-        this.board = new ArrayList<>(size);
         this.positionMap = new HashMap<>();
+        this.board = new Ship[size][size];
 
-        for (int i = 0; i < this.board.size(); i++) {
-            this.board.set(i, new ArrayList<>(size));
+        for (int i = 0; i < size; i++) {
+            this.board[i] = new Ship[10];
         }
 
     }
 
     public Ship getShip(int x, int y) {
-        return board.get(x).get(y);
+        return board[x][y];
     }
 
     public boolean isShip(int x, int y) {
@@ -54,11 +52,11 @@ public class Board {
         Direction direction = position.getDirection();
 
         Validate.isTrue(!positionMap.containsKey(ship), "The board already contains this ship");
-        Validate.isTrue(isShip(x, y), "The board already contains a ship in position (%s, %s)", x, y);
+        Validate.isTrue(!isShip(x, y), "The board already contains a ship in position (%s, %s)", x, y);
         Validate.isTrue(isValidPosition(x, y), "Invalid destination coordinate (%s, %s)", x, y);
         Validate.notNull(direction, "A direction is mandatory");
 
-        board.get(x).add(y, ship);
+        board[x][y] = ship;
         positionMap.put(
                 ship,
                 new Position(
@@ -70,7 +68,11 @@ public class Board {
     public Position removeShip(Ship ship) {
 
         Position position = positionMap.remove(ship);
-        board.get(position.getX()).set(position.getY(), null);
+
+        int x = position.getX();
+        int y = position.getY();
+
+        board[x][y] = null;
 
         return position;
     }
@@ -156,13 +158,13 @@ public class Board {
         );
 
         removeShip(ship);
-        addShip(ship, position);
+        addShip(ship, newPosition);
 
         return newPosition;
     }
 
     public boolean isValidPosition(int x, int y) {
-        return x >= 0 && x > size && y >= 0 && y > size;
+        return x >= 0 && x < size && y >= 0 && y < size;
     }
 
     public Map<Ship, Position> getPositionMap() {

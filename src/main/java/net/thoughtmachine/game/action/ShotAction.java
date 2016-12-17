@@ -1,6 +1,6 @@
-package net.thoughtmachine.game.impl;
+package net.thoughtmachine.game.action;
 
-import net.thoughtmachine.game.IAction;
+import net.thoughtmachine.game.IBoardAction;
 import net.thoughtmachine.model.Board;
 import net.thoughtmachine.model.Ship;
 import net.thoughtmachine.utils.ActionUtils;
@@ -9,12 +9,12 @@ import org.apache.commons.lang3.Validate;
 /**
  * Created by Łukasz Kwasek on 17/12/2016.
  */
-public class MoveAction implements IAction {
+public class ShotAction implements IBoardAction {
 
     private int x;
     private int y;
 
-    public MoveAction(int x, int y) {
+    public ShotAction(int x, int y) {
         this.x = x;
         this.y = y;
     }
@@ -24,13 +24,11 @@ public class MoveAction implements IAction {
 
         Validate.notNull(board);
 
-        Ship ship = ActionUtils.getUnsunkShip(board, x, y);
+        Ship ship = ActionUtils.getShip(board, x, y);
 
-        Validate.isTrue(!ship.isSunk(), "Cannot move a sunk ship");
-
-        board.moveShipForward(
-                ship
-        );
+        if (ship != null) {
+            ship.setSunk(true);
+        }
 
     }
 }
