@@ -3,7 +3,6 @@ package net.thoughtmachine.game.action;
 import net.thoughtmachine.game.IBoardAction;
 import net.thoughtmachine.model.Board;
 import net.thoughtmachine.model.Ship;
-import net.thoughtmachine.utils.ActionUtils;
 import org.apache.commons.lang3.Validate;
 
 /**
@@ -24,7 +23,8 @@ public class ShotAction implements IBoardAction {
 
         Validate.notNull(board);
 
-        Ship ship = ActionUtils.getShip(board, x, y);
+        Validate.isTrue(board.isShip(x, y), "There is no ship at coordinate (%s, %s)", x, y);
+        Ship ship = board.getShip(x, y);
 
         if (ship != null) {
             ship.setSunk(true);

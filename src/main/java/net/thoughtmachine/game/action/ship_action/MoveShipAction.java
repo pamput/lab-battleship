@@ -10,14 +10,6 @@ import org.apache.commons.lang3.Validate;
  */
 public class MoveShipAction implements IShipAction {
 
-    private int x;
-    private int y;
-
-    public MoveShipAction(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
     @Override
     public void execute(Ship ship, Board board) {
 

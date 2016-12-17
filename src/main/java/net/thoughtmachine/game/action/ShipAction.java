@@ -4,7 +4,6 @@ import net.thoughtmachine.game.IBoardAction;
 import net.thoughtmachine.game.IShipAction;
 import net.thoughtmachine.model.Board;
 import net.thoughtmachine.model.Ship;
-import net.thoughtmachine.utils.ActionUtils;
 import org.apache.commons.lang3.Validate;
 
 import java.util.List;
@@ -30,7 +29,8 @@ public class ShipAction implements IBoardAction {
         Validate.notNull(board);
         Validate.notNull(actionList);
 
-        Ship ship = ActionUtils.getShip(board, x, y);
+        Validate.isTrue(board.isShip(x, y), "There is no ship at coordinate (%s, %s)", x, y);
+        Ship ship = board.getShip(x, y);
 
         for (IShipAction action : actionList) {
             action.execute(ship, board);

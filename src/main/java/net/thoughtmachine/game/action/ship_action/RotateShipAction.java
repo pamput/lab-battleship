@@ -11,13 +11,9 @@ import org.apache.commons.lang3.Validate;
  */
 public class RotateShipAction implements IShipAction {
 
-    private int x;
-    private int y;
     private Rotation rotation;
 
-    public RotateShipAction(int x, int y, Rotation rotation) {
-        this.x = x;
-        this.y = y;
+    public RotateShipAction(Rotation rotation) {
         this.rotation = rotation;
     }
 

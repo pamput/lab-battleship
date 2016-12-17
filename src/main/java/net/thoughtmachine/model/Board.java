@@ -31,10 +31,12 @@ public class Board {
     }
 
     public Ship getShip(int x, int y) {
+        Validate.isTrue(isValidPosition(x, y), "Invalid destination coordinate (%s, %s)", x, y);
         return board[x][y];
     }
 
     public boolean isShip(int x, int y) {
+        Validate.isTrue(isValidPosition(x, y), "Invalid destination coordinate (%s, %s)", x, y);
         return getShip(x, y) != null;
     }
 
@@ -154,10 +156,10 @@ public class Board {
         Validate.isTrue(isValidPosition(x, y), "Invalid destination coordinate (%s, %s)", x, y);
         Validate.isTrue(!isShip(x, y), "Invalid destination (%s, %s): there is already a ship there", x, y);
 
-        position.setTo(x, y, direction);
-
         board[position.getX()][position.getY()] = null;
         board[x][y] = ship;
+
+        position.setTo(x, y, direction);
 
         return position;
     }
