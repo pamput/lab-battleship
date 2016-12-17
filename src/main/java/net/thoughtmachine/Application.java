@@ -1,30 +1,49 @@
 package net.thoughtmachine;
 
-import java.io.BufferedReader;
+import net.thoughtmachine.game.Game;
+import net.thoughtmachine.parser.GameInputParser;
+import net.thoughtmachine.parser.ParsedResult;
+import net.thoughtmachine.printer.BoardPrinter;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 
 public class Application {
 
-    private static final String input = "/input.txt";
+    private static final String DEFAULT_INPUT = "/input.txt";
 
-    public void loadInput() {
-        InputStream is = getClass().getResourceAsStream(input);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-
+    public void loadInput(String input) {
         try {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
-            }
+
+            InputStream in = getClass().getResourceAsStream(input);
+
+            GameInputParser parser = new GameInputParser();
+
+            ParsedResult result = parser.parseInput(in);
+
+            Game game = new Game(result.getBoard());
+            game.execute(result.getActions());
+
+            BoardPrinter printer = new BoardPrinter();
+            printer.print(game.getBoard(), System.out);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+    }
+
+    public void loadInput() {
+        loadInput(DEFAULT_INPUT);
     }
 
     public static void main(String... args) {
         Application app = new Application();
-        app.loadInput();
+
+        if (args != null && args.length > 0) {
+            app.loadInput(args[0]);
+        } else {
+            app.loadInput();
+        }
     }
 }
