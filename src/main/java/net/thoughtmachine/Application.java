@@ -1,27 +1,30 @@
 package net.thoughtmachine;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class Application {
 
-  private static final String input = "/input.txt";
+    private static final String input = "/input.txt";
 
-  public void loadInput() {
-    InputStream is = getClass().getResourceAsStream(input);
-    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+    public void loadInput() {
+        InputStream is = getClass().getResourceAsStream(input);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 
-    try {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        System.out.println(line);
-      }
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+        try {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
-  }
 
-  public static void main(String... args) {
-    Application app = new Application();
-    app.loadInput();
-  }
+    public static void main(String... args) {
+        Application app = new Application();
+        app.loadInput();
+    }
 }
