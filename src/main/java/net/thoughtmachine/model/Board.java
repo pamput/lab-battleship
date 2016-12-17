@@ -3,7 +3,7 @@ package net.thoughtmachine.model;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.Validate;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -21,7 +21,7 @@ public class Board {
 
         this.size = size;
 
-        this.positionMap = new HashMap<>();
+        this.positionMap = new LinkedHashMap<>();
         this.board = new Ship[size][size];
 
         for (int i = 0; i < size; i++) {
@@ -152,15 +152,14 @@ public class Board {
         }
 
         Validate.isTrue(isValidPosition(x, y), "Invalid destination coordinate (%s, %s)", x, y);
+        Validate.isTrue(!isShip(x, y), "Invalid destination (%s, %s): there is already a ship there", x, y);
 
-        Position newPosition = new Position(
-                x, y, position.getDirection()
-        );
+        position.setTo(x, y, direction);
 
-        removeShip(ship);
-        addShip(ship, newPosition);
+        board[position.getX()][position.getY()] = null;
+        board[x][y] = ship;
 
-        return newPosition;
+        return position;
     }
 
     public boolean isValidPosition(int x, int y) {
