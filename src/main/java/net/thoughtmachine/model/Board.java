@@ -74,23 +74,25 @@ public class Board {
         return position;
     }
 
-    public Position rotate(Ship ship, Rotation rotation) {
+    public Position rotateShip(Ship ship, Rotation rotation) {
 
         Validate.notNull(ship);
         Validate.notNull(rotation);
 
         switch (rotation) {
             case Left:
-                return rotateLeft(ship);
+                return rotateShipLeft(ship);
             case Right:
-                return rotateRight(ship);
+                return rotateShipRight(ship);
             default:
                 throw new IllegalStateException();
         }
 
     }
 
-    public Position rotateRight(Ship ship) {
+    public Position rotateShipRight(Ship ship) {
+
+        Validate.notNull(ship);
 
         Position position = positionMap.get(ship);
 
@@ -103,7 +105,9 @@ public class Board {
         return position;
     }
 
-    public Position rotateLeft(Ship ship) {
+    public Position rotateShipLeft(Ship ship) {
+
+        Validate.notNull(ship);
 
         Position position = positionMap.get(ship);
 
@@ -116,7 +120,7 @@ public class Board {
         return position;
     }
 
-    public Position moveForward(Ship ship) {
+    public Position moveShipForward(Ship ship) {
 
         Validate.notNull(ship);
 
@@ -157,7 +161,7 @@ public class Board {
     }
 
 
-    private boolean isValidPosition(int x, int y) {
+    public boolean isValidPosition(int x, int y) {
         return x >= 0 && x > size && y >= 0 && y > size;
     }
 
