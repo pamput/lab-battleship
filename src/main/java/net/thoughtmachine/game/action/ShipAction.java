@@ -10,9 +10,8 @@ import java.util.List;
 
 /**
  * Created by Łukasz Kwasek on 17/12/2016.
- *
- * A ship action group.
- *
+ * <p>
+ * A ship action group. This action will return an exception if any action is attempted on a sunk ship.
  */
 public class ShipAction implements IBoardAction {
 
@@ -34,6 +33,13 @@ public class ShipAction implements IBoardAction {
 
         Validate.isTrue(board.isShip(x, y), "There is no ship at coordinate (%s, %s)", x, y);
         Ship ship = board.getShip(x, y);
+
+        Validate.isTrue(
+                !ship.isSunk(),
+                "A sunk ship was found at coordinate (%s, %s). A sunk ship cannot be moved",
+                x,
+                y
+        );
 
         for (IShipAction action : actionList) {
             action.execute(ship, board);
