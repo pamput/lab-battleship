@@ -1,5 +1,11 @@
 # Amazing Battleship!
 
+## Compile
+
+```
+gradle clean distzip
+```
+
 ## How to run
 
 To run a simple test:
@@ -22,7 +28,8 @@ battleship input.txt output.txt
 
 ## Script
 
-Inline comments are supported in script. The application also skips blank lines and useless spaces.
+Inline comments are supported. 
+The application also skips blank lines and useless spaces.
 
 Input:
 ```
