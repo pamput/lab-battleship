@@ -1,6 +1,7 @@
 package net.thoughtmachine.parser;
 
 import com.google.common.base.CharMatcher;
+import net.thoughtmachine.exception.ParseException;
 import net.thoughtmachine.game.IBoardAction;
 import net.thoughtmachine.game.action.MoveAction;
 import net.thoughtmachine.game.action.ShipAction;
@@ -57,7 +58,8 @@ public class GameInputParser {
         );
 
         String strSize = readLine(reader);
-        Validate.isTrue(StringUtils.isNumeric(strSize), "Could not find the board size in a valid format");
+        if (!StringUtils.isNumeric(strSize))
+            throw new ParseException("Could not find the board size in a valid format");
 
         String strShips = readLine(reader);
 
@@ -96,7 +98,7 @@ public class GameInputParser {
 
         Matcher shipLineMatcher = SHIP_PLACEMENT_LINE.matcher(strShips);
 
-        Validate.isTrue(shipLineMatcher.matches(), "Cannot parse ship placement line");
+        if (!shipLineMatcher.matches()) throw new ParseException("Cannot parse ship placement line");
 
         Matcher shipGroupMatcher = SHIP_PLACEMENT_GROUP.matcher(strShips);
         while (shipGroupMatcher.find()) {
@@ -148,7 +150,7 @@ public class GameInputParser {
                 trim(strAction).toUpperCase()
         );
 
-        Validate.isTrue(matcher.matches(), "Ship action in unsupported format: %s", trim(strAction));
+        if (!matcher.matches()) throw new ParseException("Ship action in unsupported format: %s", trim(strAction));
 
         int x = Integer.parseInt(matcher.group(1));
         int y = Integer.parseInt(matcher.group(2));
@@ -198,8 +200,11 @@ public class GameInputParser {
 
         String line;
         while ((line = reader.readLine()) != null) {
+
+            line = trim(skipComments(line));
+
             if (StringUtils.isNotBlank(line)) {
-                return trim(skipComments(line));
+                return line;
             }
         }
 

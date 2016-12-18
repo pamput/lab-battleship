@@ -1,0 +1,4 @@
+  10                      // Size of the board is 10x10
+  (0, 0, H) (9, 2, E)     // 2 ships in different locations
+  (0, 0) WRONG!           // move/rotate the ship located at (0, 0)
+  (9, 2)                  // shoot at (9, 2) and sink the ship if there is one
