@@ -14,6 +14,12 @@ import java.util.Map;
  */
 public class BoardPrinter {
 
+    /**
+     * Prints out the board state.
+     *
+     * @param board
+     * @param out
+     */
     public void print(Board board, OutputStream out) {
 
         Validate.notNull(board);
@@ -35,7 +41,7 @@ public class BoardPrinter {
                             "(%s, %s, %s) %s",
                             position.getX(),
                             position.getY(),
-                            position.getDirection().getChar(),
+                            position.getDirection().toChar(),
                             ship.isSunk() ? "SUNK" : ""
                     )
             );

@@ -20,18 +20,36 @@ public enum Direction {
         }
     }
 
-    private static Direction goRight(Direction direction) {
+    /**
+     * Returns the direction you would face if rotating right.
+     *
+     * @param direction
+     * @return
+     */
+    private static Direction rotateRight(Direction direction) {
         return order.get(
                 order.inverse().get(direction) + 1 % 4
         );
     }
 
-    private static Direction goLeft(Direction direction) {
+    /**
+     * Returns the direction you would face if rotating left.
+     *
+     * @param direction
+     * @return
+     */
+    private static Direction rotateLeft(Direction direction) {
         return order.get(
                 order.inverse().get(direction) - 1 % 4
         );
     }
 
+    /**
+     * Returns the Direction given its (not case-sensible) initial.
+     *
+     * @param c
+     * @return
+     */
     public static Direction valueOf(char c) {
         c = Character.toUpperCase(c);
 
@@ -49,15 +67,30 @@ public enum Direction {
         }
     }
 
-    public Direction goRight() {
-        return Direction.goRight(this);
+    /**
+     * Returns the direction you would face if rotating right.
+     *
+     * @return
+     */
+    public Direction rotateRight() {
+        return Direction.rotateRight(this);
     }
 
-    public Direction goLeft() {
-        return Direction.goLeft(this);
+    /**
+     * Returns the direction you would face if rotating left.
+     *
+     * @return
+     */
+    public Direction rotateLeft() {
+        return Direction.rotateLeft(this);
     }
 
-    public char getChar() {
+    /**
+     * Returns direction's uppercase initial.
+     *
+     * @return
+     */
+    public char toChar() {
         return this.toString().charAt(0);
     }
 

@@ -3,7 +3,7 @@ package net.thoughtmachine.game;
 import net.thoughtmachine.model.Board;
 import org.apache.commons.lang3.Validate;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Łukasz Kwasek on 17/12/2016.
@@ -19,16 +19,26 @@ public class Game {
         this.board = board;
     }
 
+    /**
+     * Executes the input action.
+     *
+     * @param action
+     */
     public void execute(IBoardAction action) {
         Validate.notNull(action);
         action.execute(board);
     }
 
-    public void execute(Collection<IBoardAction> actions) {
+    /**
+     * Executes the list of actions.
+     *
+     * @param actions
+     */
+    public void execute(List<IBoardAction> actions) {
 
         Validate.notNull(actions);
 
-        for(IBoardAction action : actions) {
+        for (IBoardAction action : actions) {
             execute(action);
         }
     }

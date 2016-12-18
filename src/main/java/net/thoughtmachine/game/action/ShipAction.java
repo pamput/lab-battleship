@@ -10,6 +10,9 @@ import java.util.List;
 
 /**
  * Created by Łukasz Kwasek on 17/12/2016.
+ *
+ * A ship action group.
+ *
  */
 public class ShipAction implements IBoardAction {
 

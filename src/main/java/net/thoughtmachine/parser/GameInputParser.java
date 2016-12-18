@@ -31,17 +31,24 @@ public class GameInputParser {
     );
 
     private final Pattern SHIP_PLACEMENT_LINE = Pattern.compile(
-            "([\\s]*\\([\\s]*([0-9]+)[\\s]*,[\\s]*([0-9]+)[\\s]*,[\\s]*([ENSW])[\\s]*\\)[\\s]*)+"
+            "(\\s*\\(\\s*([0-9]+)\\s*,\\s*([0-9]+)\\s*,\\s*([ENSW])\\s*\\)\\s*)+"
     );
 
     private final Pattern SHIP_PLACEMENT_GROUP = Pattern.compile(
-            "[\\s]*\\([\\s]*([0-9]+)[\\s]*,[\\s]*([0-9]+)[\\s]*,[\\s]*([ENSW])[\\s]*\\)[\\s]*"
+            "\\s*\\(\\s*([0-9]+)\\s*,\\s*([0-9]+)\\s*,\\s*([ENSW])\\s*\\)\\s*"
     );
 
     private final Pattern ACTION_LINE = Pattern.compile(
-            "[\\s]*\\([\\s]*([0-9]+)[\\s]*,[\\s]*([0-9]+)[\\s]*\\)[\\s]*([LRM\\s]*)[\\s]*"
+            "\\s*\\(\\s*([0-9]+)\\s*,\\s*([0-9]+)\\s*\\)\\s*([LRM\\s]*)\\s*"
     );
 
+    /**
+     * Returns the parse of the input stream.
+     *
+     * @param inputStream
+     * @return
+     * @throws IOException
+     */
     public ParsedResult parseInput(InputStream inputStream) throws IOException {
 
         BufferedReader reader = new BufferedReader(
@@ -67,6 +74,13 @@ public class GameInputParser {
 
     }
 
+    /**
+     * Creates a board object.
+     *
+     * @param strSize the board size
+     * @param strShips the ship placement string
+     * @return
+     */
     private Board createBoard(String strSize, String strShips) {
 
         Validate.notBlank(strSize);
@@ -102,59 +116,82 @@ public class GameInputParser {
         return board;
     }
 
+    /**
+     * Given a list of command lines to parse, it returns a list of actions.
+     *
+     * @param strActionList
+     * @return
+     */
     private List<IBoardAction> createActionList(List<String> strActionList) {
 
         List<IBoardAction> actionList = new ArrayList<>();
 
         for (String strAction : strActionList) {
-
-            Matcher matcher = ACTION_LINE.matcher(
-                    trim(strAction).toUpperCase()
+            actionList.add(
+                    createAction(strAction)
             );
-
-            Validate.isTrue(matcher.matches(), "Ship action in unsupported format: %s", trim(strAction));
-
-            int x = Integer.parseInt(matcher.group(1));
-            int y = Integer.parseInt(matcher.group(2));
-            String actions = matcher.group(3);
-
-            if (StringUtils.isBlank(actions)) {
-
-                actionList.add(
-                        new ShotAction(x, y)
-                );
-
-            } else {
-
-                List<IShipAction> shipActionList = new ArrayList<>();
-
-                for (char c : cleanSpaces(actions).toCharArray()) {
-                    switch (c) {
-                        case 'L':
-                            shipActionList.add(new RotateShipAction(Rotation.Left));
-                            break;
-                        case 'R':
-                            shipActionList.add(new RotateShipAction(Rotation.Right));
-                            break;
-                        case 'M':
-                            shipActionList.add(new MoveShipAction());
-                            break;
-                        default:
-                            throw new IllegalStateException();
-                    }
-                }
-
-                actionList.add(
-                        new ShipAction(x, y, shipActionList)
-                );
-            }
-
         }
 
         return actionList;
 
     }
 
+    /**
+     * Given a command, returns an action.
+     *
+     * @param strAction
+     * @return
+     */
+    private IBoardAction createAction(String strAction) {
+        Matcher matcher = ACTION_LINE.matcher(
+                trim(strAction).toUpperCase()
+        );
+
+        Validate.isTrue(matcher.matches(), "Ship action in unsupported format: %s", trim(strAction));
+
+        int x = Integer.parseInt(matcher.group(1));
+        int y = Integer.parseInt(matcher.group(2));
+        String actions = matcher.group(3);
+
+        if (StringUtils.isBlank(actions)) {
+
+            return new ShotAction(x, y);
+
+        } else {
+
+            List<IShipAction> shipActionList = new ArrayList<>();
+
+            for (char c : cleanSpaces(actions).toCharArray()) {
+                switch (c) {
+                    case 'L':
+                        shipActionList.add(new RotateShipAction(Rotation.Left));
+                        break;
+                    case 'R':
+                        shipActionList.add(new RotateShipAction(Rotation.Right));
+                        break;
+                    case 'M':
+                        shipActionList.add(new MoveShipAction());
+                        break;
+                    default:
+                        throw new IllegalStateException();
+                }
+            }
+
+            return new ShipAction(x, y, shipActionList);
+        }
+    }
+
+    /**
+     * This method read a line from the reader. It also:
+     * <p>
+     * - Skips empty lines
+     * - Deletes comments
+     * - Trims the line
+     *
+     * @param reader
+     * @return
+     * @throws IOException
+     */
     private String readLine(BufferedReader reader) throws IOException {
         Validate.notNull(reader);
 
@@ -168,14 +205,32 @@ public class GameInputParser {
         return null;
     }
 
+    /**
+     * Returns the input string without comments.
+     *
+     * @param string
+     * @return
+     */
     private String skipComments(String string) {
         return COMMENT.matcher(string).replaceAll("");
     }
 
+    /**
+     * Returns the input string with head and tail whitespaces removed.
+     *
+     * @param string
+     * @return
+     */
     private String trim(String string) {
         return StringUtils.trim(string);
     }
 
+    /**
+     * Returns the input string with ALL the whitespaces removed.
+     *
+     * @param string
+     * @return
+     */
     private String cleanSpaces(String string) {
         return CharMatcher.whitespace().removeFrom(string);
     }

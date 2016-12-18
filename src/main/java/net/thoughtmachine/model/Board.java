@@ -30,20 +30,48 @@ public class Board {
 
     }
 
+    /**
+     * Given a coordinate, returns the ship. It returns null if no ship is on the coordinate.
+     * Returns IllegalArgumentException if the coordinate are not valid.
+     *
+     * @param x
+     * @param y
+     * @return
+     */
     public Ship getShip(int x, int y) {
-        Validate.isTrue(isValidPosition(x, y), "Invalid destination coordinate (%s, %s)", x, y);
+        Validate.isTrue(isValidCoordinate(x, y), "Invalid destination coordinate (%s, %s)", x, y);
         return board[x][y];
     }
 
+    /**
+     * Checks if a ship exists on the given coordinate.
+     * Returns IllegalArgumentException if the coordinate are not valid.
+     *
+     * @param x
+     * @param y
+     * @return
+     */
     public boolean isShip(int x, int y) {
-        Validate.isTrue(isValidPosition(x, y), "Invalid destination coordinate (%s, %s)", x, y);
+        Validate.isTrue(isValidCoordinate(x, y), "Invalid destination coordinate (%s, %s)", x, y);
         return getShip(x, y) != null;
     }
 
+    /**
+     * Checks if the ship is placed on the board.
+     *
+     * @param ship
+     * @return
+     */
     public boolean contains(Ship ship) {
         return positionMap.containsKey(ship);
     }
 
+    /**
+     * Places a ship at the given position.
+     *
+     * @param ship
+     * @param position
+     */
     public void addShip(Ship ship, Position position) {
 
         Validate.notNull(ship);
@@ -55,7 +83,7 @@ public class Board {
 
         Validate.isTrue(!positionMap.containsKey(ship), "The board already contains this ship");
         Validate.isTrue(!isShip(x, y), "The board already contains a ship in position (%s, %s)", x, y);
-        Validate.isTrue(isValidPosition(x, y), "Invalid destination coordinate (%s, %s)", x, y);
+        Validate.isTrue(isValidCoordinate(x, y), "Invalid destination coordinate (%s, %s)", x, y);
         Validate.notNull(direction, "A direction is mandatory");
 
         board[x][y] = ship;
@@ -67,6 +95,12 @@ public class Board {
         );
     }
 
+    /**
+     * Removes the ship from the board.
+     *
+     * @param ship
+     * @return
+     */
     public Position removeShip(Ship ship) {
 
         Position position = positionMap.remove(ship);
@@ -79,6 +113,13 @@ public class Board {
         return position;
     }
 
+    /**
+     * It rotates the ship.
+     *
+     * @param ship
+     * @param rotation
+     * @return
+     */
     public Position rotateShip(Ship ship, Rotation rotation) {
 
         Validate.notNull(ship);
@@ -95,6 +136,11 @@ public class Board {
 
     }
 
+    /**
+     * Rotates the ship to the right.
+     * @param ship
+     * @return
+     */
     public Position rotateShipRight(Ship ship) {
 
         Validate.notNull(ship);
@@ -104,12 +150,18 @@ public class Board {
         Validate.notNull(position);
 
         position.setDirection(
-                position.getDirection().goRight()
+                position.getDirection().rotateRight()
         );
 
         return position;
     }
 
+    /**
+     * Rotates the ship to the left.
+     *
+     * @param ship
+     * @return
+     */
     public Position rotateShipLeft(Ship ship) {
 
         Validate.notNull(ship);
@@ -119,12 +171,19 @@ public class Board {
         Validate.notNull(position);
 
         position.setDirection(
-                position.getDirection().goLeft()
+                position.getDirection().rotateLeft()
         );
 
         return position;
     }
 
+    /**
+     * Moves the ship forward.
+     * Throws an IllegalStatesException if the destination position is invalid or already occupied by another ship.
+     *
+     * @param ship
+     * @return
+     */
     public Position moveShipForward(Ship ship) {
 
         Validate.notNull(ship);
@@ -153,8 +212,8 @@ public class Board {
                 break;
         }
 
-        Validate.isTrue(isValidPosition(x, y), "Invalid destination coordinate (%s, %s)", x, y);
-        Validate.isTrue(!isShip(x, y), "Invalid destination (%s, %s): there is already a ship there", x, y);
+        Validate.validState(isValidCoordinate(x, y), "Invalid destination coordinate (%s, %s)", x, y);
+        Validate.validState(!isShip(x, y), "Invalid destination (%s, %s): there is already a ship there", x, y);
 
         board[position.getX()][position.getY()] = null;
         board[x][y] = ship;
@@ -164,10 +223,22 @@ public class Board {
         return position;
     }
 
-    public boolean isValidPosition(int x, int y) {
+    /**
+     * Checks if the coordinate is valid. A valid coordinate falls in the board, and not outside.
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public boolean isValidCoordinate(int x, int y) {
         return x >= 0 && x < size && y >= 0 && y < size;
     }
 
+    /**
+     * Returns a map rappresenting the state of the board.
+     *
+     * @return
+     */
     public Map<Ship, Position> getPositionMap() {
         return ImmutableMap.copyOf(positionMap);
     }
