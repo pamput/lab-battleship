@@ -10,8 +10,8 @@ import java.util.Map;
  * Created by Łukasz Kwasek on 17/12/2016.
  * <p>
  * The board entity. The board can have any square size. The size has to be greater than 0. Only one ship can exists
- * on each square (sunk or not). Any ship can be moved around the board. A ship cannot be moved on another ship's position
- * (sunk or not). This board implementation doesn't do any distinction between a sunk or not ship.
+ * on each square. Once a ship has been sunk, cannot be un-sunk. A sunk ship cannot be moved. A sunk ship can be removed
+ * and added again to the board.
  */
 public class Board {
 
@@ -144,6 +144,7 @@ public class Board {
 
     /**
      * Returns the position of a sunk ship. If the ship hasn't been sunk or is not on the board, the result will be null.
+     *
      * @param ship
      * @return
      */

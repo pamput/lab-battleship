@@ -25,7 +25,6 @@ public class ShotAction implements IBoardAction {
 
         Validate.notNull(board);
 
-        Validate.isTrue(board.isShip(x, y), "There is no ship at coordinate (%s, %s)", x, y);
         Ship ship = board.getShip(x, y);
 
         if (ship != null) {
