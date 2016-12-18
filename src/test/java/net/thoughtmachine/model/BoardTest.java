@@ -31,7 +31,7 @@ public class BoardTest {
 
         assertNotNull(shipOnBoard);
         assertEquals(ship, shipOnBoard);
-        assertFalse(ship.isSunk());
+        assertFalse(board.isSunkShip(ship));
 
     }
 
@@ -121,174 +121,18 @@ public class BoardTest {
     }
 
     @Test
-    public void rotateShip() throws Exception {
-
-        Board board = new Board();
-
-        Ship ship = new Ship();
-        Position position = new Position(0, 0, Direction.North);
-
-        board.addShip(ship, position);
-
-        board.rotateShip(ship, Rotation.Right);
-        assertEquals(Direction.Est, board.getShipPosition(ship).getDirection());
-
-        board.rotateShip(ship, Rotation.Right);
-        assertEquals(Direction.South, board.getShipPosition(ship).getDirection());
-
-        board.rotateShip(ship, Rotation.Right);
-        assertEquals(Direction.West, board.getShipPosition(ship).getDirection());
-
-        board.rotateShip(ship, Rotation.Right);
-        assertEquals(Direction.North, board.getShipPosition(ship).getDirection());
-
-        board.rotateShip(ship, Rotation.Left);
-        assertEquals(Direction.West, board.getShipPosition(ship).getDirection());
-
-        board.rotateShip(ship, Rotation.Left);
-        assertEquals(Direction.South, board.getShipPosition(ship).getDirection());
-
-        board.rotateShip(ship, Rotation.Left);
-        assertEquals(Direction.Est, board.getShipPosition(ship).getDirection());
-
-        board.rotateShip(ship, Rotation.Left);
-        assertEquals(Direction.North, board.getShipPosition(ship).getDirection());
-
-    }
-
-    @Test
-    public void rotateShipRight() throws Exception {
-
-        Board board = new Board();
-
-        Ship ship = new Ship();
-        Position position = new Position(0, 0, Direction.North);
-
-        board.addShip(ship, position);
-
-        board.rotateShipRight(ship);
-        assertEquals(Direction.Est, board.getShipPosition(ship).getDirection());
-
-        board.rotateShipRight(ship);
-        assertEquals(Direction.South, board.getShipPosition(ship).getDirection());
-
-        board.rotateShipRight(ship);
-        assertEquals(Direction.West, board.getShipPosition(ship).getDirection());
-
-        board.rotateShipRight(ship);
-        assertEquals(Direction.North, board.getShipPosition(ship).getDirection());
-
-    }
-
-    @Test
-    public void rotateShipLeft() throws Exception {
-
-        Board board = new Board();
-
-        Ship ship = new Ship();
-        Position position = new Position(0, 0, Direction.North);
-
-        board.addShip(ship, position);
-
-        board.rotateShipLeft(ship);
-        assertEquals(Direction.West, board.getShipPosition(ship).getDirection());
-
-        board.rotateShipLeft(ship);
-        assertEquals(Direction.South, board.getShipPosition(ship).getDirection());
-
-        board.rotateShipLeft(ship);
-        assertEquals(Direction.Est, board.getShipPosition(ship).getDirection());
-
-        board.rotateShipLeft(ship);
-        assertEquals(Direction.North, board.getShipPosition(ship).getDirection());
-
-    }
-
-    @Test
-    public void moveShipForward() throws Exception {
+    public void moveShipTo() throws Exception {
 
         Board board = new Board();
         Ship ship = new Ship();
         Position startingPosition = new Position(0, 0, Direction.North);
 
         board.addShip(ship, startingPosition);
+        assertEquals(startingPosition, board.getShipPosition(ship));
 
-        board.moveShipForward(ship);
-        assertEquals(0, board.getShipPosition(ship).getX());
-        assertEquals(1, board.getShipPosition(ship).getY());
-
-        board.moveShipForward(ship);
-        assertEquals(0, board.getShipPosition(ship).getX());
-        assertEquals(2, board.getShipPosition(ship).getY());
-
-        board.moveShipForward(ship);
-        assertEquals(0, board.getShipPosition(ship).getX());
-        assertEquals(3, board.getShipPosition(ship).getY());
-
-        board.moveShipForward(ship);
-        assertEquals(0, board.getShipPosition(ship).getX());
-        assertEquals(4, board.getShipPosition(ship).getY());
-
-        board.rotateShipRight(ship);
-        assertEquals(0, board.getShipPosition(ship).getX());
-        assertEquals(4, board.getShipPosition(ship).getY());
-
-        board.moveShipForward(ship);
-        assertEquals(1, board.getShipPosition(ship).getX());
-        assertEquals(4, board.getShipPosition(ship).getY());
-
-        board.moveShipForward(ship);
-        assertEquals(2, board.getShipPosition(ship).getX());
-        assertEquals(4, board.getShipPosition(ship).getY());
-
-        board.moveShipForward(ship);
-        assertEquals(3, board.getShipPosition(ship).getX());
-        assertEquals(4, board.getShipPosition(ship).getY());
-
-        board.moveShipForward(ship);
-        assertEquals(4, board.getShipPosition(ship).getX());
-        assertEquals(4, board.getShipPosition(ship).getY());
-
-        board.rotateShipLeft(ship);
-        assertEquals(4, board.getShipPosition(ship).getX());
-        assertEquals(4, board.getShipPosition(ship).getY());
-
-        board.moveShipForward(ship);
-        assertEquals(4, board.getShipPosition(ship).getX());
-        assertEquals(5, board.getShipPosition(ship).getY());
-
-        board.moveShipForward(ship);
-        assertEquals(4, board.getShipPosition(ship).getX());
-        assertEquals(6, board.getShipPosition(ship).getY());
-
-        board.moveShipForward(ship);
-        assertEquals(4, board.getShipPosition(ship).getX());
-        assertEquals(7, board.getShipPosition(ship).getY());
-
-        board.moveShipForward(ship);
-        assertEquals(4, board.getShipPosition(ship).getX());
-        assertEquals(8, board.getShipPosition(ship).getY());
-
-        board.rotateShipLeft(ship);
-        assertEquals(4, board.getShipPosition(ship).getX());
-        assertEquals(8, board.getShipPosition(ship).getY());
-
-        board.moveShipForward(ship);
-        assertEquals(3, board.getShipPosition(ship).getX());
-        assertEquals(8, board.getShipPosition(ship).getY());
-
-        board.rotateShipLeft(ship);
-        assertEquals(3, board.getShipPosition(ship).getX());
-        assertEquals(8, board.getShipPosition(ship).getY());
-
-        board.moveShipForward(ship);
-        assertEquals(3, board.getShipPosition(ship).getX());
-        assertEquals(7, board.getShipPosition(ship).getY());
-
-        board.moveShipForward(ship);
-        assertEquals(3, board.getShipPosition(ship).getX());
-        assertEquals(6, board.getShipPosition(ship).getY());
-
+        Position toPosition = new Position(5, 5, Direction.Est);
+        board.moveShip(ship, toPosition);
+        assertEquals(toPosition, board.getShipPosition(ship));
     }
 
     @Test(expected = ExpectedTestException.class)
@@ -296,14 +140,15 @@ public class BoardTest {
 
         Board board = new Board();
         Ship ship = new Ship();
-        Position position = new Position(0, 0, Direction.North);
+        Position startingPosition = new Position(0, 0, Direction.North);
 
-        board.addShip(ship, position);
-        board.rotateShipLeft(ship);
+        board.addShip(ship, startingPosition);
+
+        Position toPosition = new Position(11, 11, Direction.Est);
 
         try {
-            board.moveShipForward(ship);
-        } catch (IllegalStateException e) {
+            board.moveShip(ship, toPosition);
+        } catch (IllegalArgumentException e) {
             throw new ExpectedTestException(e);
         }
 
@@ -322,8 +167,8 @@ public class BoardTest {
         board.addShip(ship2, position2);
 
         try {
-            board.moveShipForward(ship1);
-        } catch (IllegalStateException e) {
+            board.moveShip(ship1, position2);
+        } catch (IllegalArgumentException e) {
             throw new ExpectedTestException(e);
         }
 

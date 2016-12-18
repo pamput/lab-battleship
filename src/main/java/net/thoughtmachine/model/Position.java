@@ -3,7 +3,7 @@ package net.thoughtmachine.model;
 /**
  * Created by Łukasz Kwasek on 17/12/2016.
  */
-public class Position {
+public class Position implements Cloneable {
 
     private int x;
     private int y;
@@ -25,12 +25,12 @@ public class Position {
         return x;
     }
 
-    public void setX(int x) {
-        this.x = x;
-    }
-
     public int getY() {
         return y;
+    }
+
+    public void setX(int x) {
+        this.x = x;
     }
 
     public void setY(int y) {
@@ -69,5 +69,12 @@ public class Position {
         result = 31 * result + y;
         result = 31 * result + direction.hashCode();
         return result;
+    }
+
+    @Override
+    public Position clone() {
+        return new Position(
+                x, y, direction
+        );
     }
 }

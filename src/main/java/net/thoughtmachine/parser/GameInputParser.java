@@ -2,12 +2,13 @@ package net.thoughtmachine.parser;
 
 import com.google.common.base.CharMatcher;
 import net.thoughtmachine.game.IBoardAction;
-import net.thoughtmachine.game.IShipAction;
+import net.thoughtmachine.game.action.MoveAction;
 import net.thoughtmachine.game.action.ShipAction;
 import net.thoughtmachine.game.action.ShotAction;
-import net.thoughtmachine.game.action.ship_action.MoveShipAction;
-import net.thoughtmachine.game.action.ship_action.RotateShipAction;
-import net.thoughtmachine.model.*;
+import net.thoughtmachine.model.Board;
+import net.thoughtmachine.model.Direction;
+import net.thoughtmachine.model.Position;
+import net.thoughtmachine.model.Ship;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
@@ -77,7 +78,7 @@ public class GameInputParser {
     /**
      * Creates a board object.
      *
-     * @param strSize the board size
+     * @param strSize  the board size
      * @param strShips the ship placement string
      * @return
      */
@@ -159,18 +160,18 @@ public class GameInputParser {
 
         } else {
 
-            List<IShipAction> shipActionList = new ArrayList<>();
+            List<MoveAction> shipActionList = new ArrayList<>();
 
             for (char c : cleanSpaces(actions).toCharArray()) {
                 switch (c) {
                     case 'L':
-                        shipActionList.add(new RotateShipAction(Rotation.Left));
+                        shipActionList.add(MoveAction.Left);
                         break;
                     case 'R':
-                        shipActionList.add(new RotateShipAction(Rotation.Right));
+                        shipActionList.add(MoveAction.Right);
                         break;
                     case 'M':
-                        shipActionList.add(new MoveShipAction());
+                        shipActionList.add(MoveAction.Move);
                         break;
                     default:
                         throw new IllegalStateException();

@@ -28,7 +28,6 @@ public class BoardPrinter {
         PrintStream printer = new PrintStream(out);
 
         Map<Ship, Position> positionMap = board.getPositionMap();
-
         Validate.notNull(positionMap);
 
         for (Ship ship : positionMap.keySet()) {
@@ -38,11 +37,28 @@ public class BoardPrinter {
 
             printer.println(
                     String.format(
-                            "(%s, %s, %s) %s",
+                            "(%s, %s, %s)",
                             position.getX(),
                             position.getY(),
-                            position.getDirection().toChar(),
-                            ship.isSunk() ? "SUNK" : ""
+                            position.getDirection().toChar()
+                    )
+            );
+        }
+
+        Map<Ship, Position> sunkShipPositionMap = board.getSunkPositionMap();
+        Validate.notNull(sunkShipPositionMap);
+
+        for (Ship ship : sunkShipPositionMap.keySet()) {
+            Position position = sunkShipPositionMap.get(ship);
+
+            Validate.notNull(position);
+
+            printer.println(
+                    String.format(
+                            "(%s, %s, %s) SUNK",
+                            position.getX(),
+                            position.getY(),
+                            position.getDirection().toChar()
                     )
             );
         }

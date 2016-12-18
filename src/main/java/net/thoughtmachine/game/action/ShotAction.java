@@ -7,9 +7,8 @@ import org.apache.commons.lang3.Validate;
 
 /**
  * Created by Łukasz Kwasek on 17/12/2016.
- *
+ * <p>
  * A shot action.
- *
  */
 public class ShotAction implements IBoardAction {
 
@@ -30,7 +29,7 @@ public class ShotAction implements IBoardAction {
         Ship ship = board.getShip(x, y);
 
         if (ship != null) {
-            ship.setSunk(true);
+            board.sinkShip(ship);
         }
 
     }

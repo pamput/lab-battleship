@@ -17,6 +17,7 @@ public class Board {
 
     private Ship[][] board;
     private Map<Ship, Position> positionMap;
+    private Map<Ship, Position> sunkPositionMap;
     private int size;
 
     /**
@@ -38,6 +39,7 @@ public class Board {
         this.size = size;
 
         this.positionMap = new LinkedHashMap<>();
+        this.sunkPositionMap = new LinkedHashMap<>();
         this.board = new Ship[size][size];
 
         for (int i = 0; i < size; i++) {
@@ -47,7 +49,7 @@ public class Board {
     }
 
     /**
-     * Given a coordinate, returns the ship. It returns null if no ship is on the coordinate.
+     * Given a coordinate, returns the un-sunk ship. It returns null if no un-sunk ship is on the coordinate.
      * Returns IllegalArgumentException if the coordinate are not valid.
      *
      * @param x
@@ -79,7 +81,7 @@ public class Board {
      * @return
      */
     public boolean contains(Ship ship) {
-        return positionMap.containsKey(ship);
+        return positionMap.containsKey(ship) || sunkPositionMap.containsKey(ship);
     }
 
     /**
@@ -109,10 +111,48 @@ public class Board {
                         x, y, direction
                 )
         );
+
+        if (isSunkShip(ship)) {
+            sinkShip(ship);
+        }
+
+    }
+
+    public boolean isSunkShip(Ship ship) {
+        return sunkPositionMap.containsKey(ship);
+    }
+
+    public void sinkShip(Ship ship) {
+
+        Validate.isTrue(contains(ship), "The board doesn't contain this ship");
+
+        if (!isSunkShip(ship)) {
+            sunkPositionMap.put(ship, positionMap.remove(ship));
+        }
+
     }
 
     /**
-     * Removes the ship from the board.
+     * Remove a sunk ship from the board. Returns the position at which the ship was sunk.
+     *
+     * @param ship
+     * @return
+     */
+    public Position removeSunkShip(Ship ship) {
+        return sunkPositionMap.remove(ship);
+    }
+
+    /**
+     * Returns the position of a sunk ship. If the ship hasn't been sunk or is not on the board, the result will be null.
+     * @param ship
+     * @return
+     */
+    public Position getSunkShipPosition(Ship ship) {
+        return sunkPositionMap.get(ship);
+    }
+
+    /**
+     * Removes the ship from the board. Returns null if the ship is not placed anywhere.
      *
      * @param ship
      * @return
@@ -121,123 +161,35 @@ public class Board {
 
         Position position = positionMap.remove(ship);
 
-        int x = position.getX();
-        int y = position.getY();
+        if (position != null) {
+            int x = position.getX();
+            int y = position.getY();
 
-        board[x][y] = null;
-
-        return position;
-    }
-
-    /**
-     * It rotates the ship.
-     *
-     * @param ship
-     * @param rotation
-     * @return
-     */
-    public Position rotateShip(Ship ship, Rotation rotation) {
-
-        Validate.notNull(ship);
-        Validate.notNull(rotation);
-
-        switch (rotation) {
-            case Left:
-                return rotateShipLeft(ship);
-            case Right:
-                return rotateShipRight(ship);
-            default:
-                throw new IllegalStateException();
+            board[x][y] = null;
         }
 
-    }
-
-    /**
-     * Rotates the ship to the right.
-     *
-     * @param ship
-     * @return
-     */
-    public Position rotateShipRight(Ship ship) {
-
-        Validate.notNull(ship);
-
-        Position position = positionMap.get(ship);
-
-        Validate.notNull(position);
-
-        position.setDirection(
-                position.getDirection().rotateRight()
-        );
-
         return position;
     }
 
     /**
-     * Rotates the ship to the left.
+     * Moves the ship to the designated position. It return the previous ship position.
      *
      * @param ship
      * @return
      */
-    public Position rotateShipLeft(Ship ship) {
+    public Position moveShip(Ship ship, Position to) {
 
-        Validate.notNull(ship);
-
-        Position position = positionMap.get(ship);
-
-        Validate.notNull(position);
-
-        position.setDirection(
-                position.getDirection().rotateLeft()
-        );
-
-        return position;
-    }
-
-    /**
-     * Moves the ship forward.
-     * Throws an IllegalStatesException if the destination position is invalid or already occupied by another ship.
-     *
-     * @param ship
-     * @return
-     */
-    public Position moveShipForward(Ship ship) {
-
-        Validate.notNull(ship);
-
-        Position position = positionMap.get(ship);
-        Direction direction = position.getDirection();
+        int x = to.getX();
+        int y = to.getY();
+        Direction direction = to.getDirection();
 
         Validate.notNull(direction);
-        Validate.notNull(position);
+        Validate.isTrue(isValidCoordinate(x, y), "Invalid coordinate (%s, %s)", x, y);
+        Validate.isTrue(!isShip(x, y), "There is already a ship on coordinate (%s, %s)", x, y);
+        Validate.validState(!isSunkShip(ship), "Cannot move sunk ship");
+        Validate.validState(positionMap.containsKey(ship));
 
-        int x = position.getX();
-        int y = position.getY();
-
-        switch (direction) {
-            case North:
-                y++;
-                break;
-            case Est:
-                x++;
-                break;
-            case South:
-                y--;
-                break;
-            case West:
-                x--;
-                break;
-        }
-
-        Validate.validState(isValidCoordinate(x, y), "Invalid destination coordinate (%s, %s)", x, y);
-        Validate.validState(!isShip(x, y), "Invalid destination (%s, %s): there is already a ship there", x, y);
-
-        board[position.getX()][position.getY()] = null;
-        board[x][y] = ship;
-
-        position.setTo(x, y, direction);
-
-        return position;
+        return positionMap.put(ship, to);
     }
 
     /**
@@ -247,7 +199,7 @@ public class Board {
      * @return
      */
     public Position getShipPosition(Ship ship) {
-        return positionMap.get(ship);
+        return positionMap.get(ship).clone();
     }
 
     /**
@@ -262,12 +214,21 @@ public class Board {
     }
 
     /**
-     * Returns a map rappresenting the state of the board.
+     * Returns a map representing the state of the un-sunk ships on the board.
      *
      * @return
      */
     public Map<Ship, Position> getPositionMap() {
         return ImmutableMap.copyOf(positionMap);
+    }
+
+    /**
+     * Returns a map representing the state of the un-sunk ships on the board.
+     *
+     * @return
+     */
+    public Map<Ship, Position> getSunkPositionMap() {
+        return ImmutableMap.copyOf(sunkPositionMap);
     }
 
     /**
