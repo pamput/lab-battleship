@@ -72,6 +72,26 @@ public class BoardTest {
     }
 
     @Test
+    public void sinkShip() throws Exception {
+
+        Board board = new Board();
+        Ship ship = new Ship();
+
+        board.addShip(
+                ship,
+                new Position(0, 0, Direction.North)
+        );
+
+        assertFalse(board.isSunkShip(ship));
+
+        board.sinkShip(ship);
+
+        assertTrue(board.contains(ship));
+        assertEquals(null, board.getShip(0, 0));
+        assertTrue(board.isSunkShip(ship));
+    }
+
+    @Test
     public void isShip() throws Exception {
 
         Board board = new Board();

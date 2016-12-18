@@ -6,13 +6,15 @@ import net.thoughtmachine.parser.ParsedResult;
 import net.thoughtmachine.printer.BoardPrinter;
 
 import java.io.*;
+import java.net.URISyntaxException;
 
 public class Application {
 
     private static final String DEFAULT_INPUT = "/input.txt";
+    private static final String DEFAULT_OUTPUT = "/output.txt";
 
 
-    public void loadInput(String input, String output) throws IOException {
+    public void loadInput(String input, String output) throws IOException, URISyntaxException {
         InputStream in = getClass().getResourceAsStream(input);
         File outFile = new File(output);
         outFile.createNewFile();
@@ -25,24 +27,8 @@ public class Application {
         loadInput(in, System.out);
     }
 
-    public void loadInput() {
+    public void loadInput() throws IOException, URISyntaxException {
         loadInput(DEFAULT_INPUT);
-    }
-
-    public static void main(String... args) throws IOException {
-        Application app = new Application();
-
-        if (args != null && args.length > 0) {
-
-            if (args.length == 1) {
-                app.loadInput(args[0]);
-            } else {
-                app.loadInput(args[0], args[2]);
-            }
-
-        } else {
-            app.loadInput();
-        }
     }
 
     public void loadInput(InputStream in, OutputStream out) {
@@ -62,5 +48,21 @@ public class Application {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public static void main(String... args) throws IOException, URISyntaxException {
+        Application app = new Application();
+
+        if (args != null && args.length > 0) {
+
+            if (args.length == 1) {
+                app.loadInput(args[0]);
+            } else {
+                app.loadInput(args[0], args[2]);
+            }
+
+        } else {
+            app.loadInput();
+        }
     }
 }

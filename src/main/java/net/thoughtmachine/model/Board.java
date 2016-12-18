@@ -127,7 +127,9 @@ public class Board {
         Validate.isTrue(contains(ship), "The board doesn't contain this ship");
 
         if (!isSunkShip(ship)) {
-            sunkPositionMap.put(ship, positionMap.remove(ship));
+            Position position = positionMap.remove(ship);
+            board[position.getX()][position.getY()] = null;
+            sunkPositionMap.put(ship, position);
         }
 
     }
