@@ -15,6 +15,18 @@ public class Board {
     private Map<Ship, Position> positionMap;
     private int size;
 
+    /**
+     * Creates a 10x10 board.
+     */
+    public Board() {
+        this(10);
+    }
+
+    /**
+     * Creates a NxN board.
+     *
+     * @param size
+     */
     public Board(int size) {
 
         Validate.isTrue(size > 0);
@@ -138,6 +150,7 @@ public class Board {
 
     /**
      * Rotates the ship to the right.
+     *
      * @param ship
      * @return
      */
@@ -224,6 +237,16 @@ public class Board {
     }
 
     /**
+     * Returns the position of a ship, null if the ship doesn't exist on the board.
+     *
+     * @param ship
+     * @return
+     */
+    public Position getShipPosition(Ship ship) {
+        return positionMap.get(ship);
+    }
+
+    /**
      * Checks if the coordinate is valid. A valid coordinate falls in the board, and not outside.
      *
      * @param x
@@ -241,6 +264,15 @@ public class Board {
      */
     public Map<Ship, Position> getPositionMap() {
         return ImmutableMap.copyOf(positionMap);
+    }
+
+    /**
+     * Returns board size.
+     *
+     * @return
+     */
+    public int getSize() {
+        return size;
     }
 
 }

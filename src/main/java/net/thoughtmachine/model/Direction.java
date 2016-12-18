@@ -28,7 +28,7 @@ public enum Direction {
      */
     private static Direction rotateRight(Direction direction) {
         return order.get(
-                order.inverse().get(direction) + 1 % 4
+                (order.inverse().get(direction) + 1) % 4
         );
     }
 
@@ -40,7 +40,7 @@ public enum Direction {
      */
     private static Direction rotateLeft(Direction direction) {
         return order.get(
-                order.inverse().get(direction) - 1 % 4
+                (order.inverse().get(direction) + 3) % 4
         );
     }
 

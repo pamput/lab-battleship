@@ -49,4 +49,25 @@ public class Position {
     public String toString() {
         return String.format("[%s, %s, %s]", x, y, direction);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Position position = (Position) o;
+
+        if (x != position.x) return false;
+        if (y != position.y) return false;
+        return direction == position.direction;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = x;
+        result = 31 * result + y;
+        result = 31 * result + direction.hashCode();
+        return result;
+    }
 }
