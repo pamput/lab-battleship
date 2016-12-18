@@ -15,10 +15,15 @@ public class Application {
 
 
     public void loadInput(String input, String output) throws IOException, URISyntaxException {
-        InputStream in = getClass().getResourceAsStream(input);
+
         File outFile = new File(output);
-        outFile.createNewFile();
+        if (!outFile.exists()) {
+            outFile.createNewFile();
+        }
+
+        InputStream in = new FileInputStream(input);
         OutputStream out = new FileOutputStream(outFile);
+
         loadInput(in, out);
     }
 
@@ -28,7 +33,7 @@ public class Application {
     }
 
     public void loadInput() throws IOException, URISyntaxException {
-        loadInput(DEFAULT_INPUT);
+        loadInput(getClass().getResourceAsStream(DEFAULT_INPUT), System.out);
     }
 
     public void loadInput(InputStream in, OutputStream out) {
@@ -58,7 +63,7 @@ public class Application {
             if (args.length == 1) {
                 app.loadInput(args[0]);
             } else {
-                app.loadInput(args[0], args[2]);
+                app.loadInput(args[0], args[1]);
             }
 
         } else {
